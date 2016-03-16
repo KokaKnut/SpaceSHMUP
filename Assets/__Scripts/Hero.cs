@@ -5,24 +5,26 @@ public class Hero : MonoBehaviour {
 
 	static public Hero		S;
 
-	public float	speed = 30;
+    public float gameRestartDelay = 2f;
+
+    public float	speed = 30;
 	public float	rollMult = -45;
 	public float  	pitchMult=30;
 
-	public float	shieldLevel=1;
+    [SerializeField]
+    private float _shieldLevel = 1;
 
-	public bool	_____________________;
+    public bool	_____________________;
 	public Bounds bounds;
 
-	void Awake(){
+    // Declare a new delegate type WeaponFireDelegate
+    public delegate void WeaponFireDelegate();
+    // Create a WeaponFireDelegate field named fireDelegate.
+    public WeaponFireDelegate fireDelegate;
+
+    void Awake(){
 		S = this;
 		bounds = Utils.CombineBoundsOfChildren (this.gameObject);
-	}
-
-
-	// Use this for initialization
-	void Start () {
-	
 	}
 	
 	// Update is called once per frame
@@ -46,5 +48,68 @@ public class Hero : MonoBehaviour {
 		
 		// rotate the ship to make it feel more dynamic
 		transform.rotation =Quaternion.Euler(yAxis*pitchMult, xAxis*rollMult,0);
-	}
+
+        // Use the fireDelegate to fire Weapons
+        // First, make sure the Axis("Jump") button is pressed 
+        // Then ensure that fireDelegate isn't null to avoid an error
+        if (Input.GetAxis("Jump") == 1 && fireDelegate != null)
+        {
+            fireDelegate();
+        }
+    }
+
+    public GameObject lastTriggerGo = null;
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Find the tag of other.gameObject or its parent GameObjects
+        GameObject go = Utils.FindTaggedParent(other.gameObject);
+        // If there is a parent with a tag
+        if (go != null)
+        {
+            // Make sure it's not the same triggering go as last time
+            if (go == lastTriggerGo)
+            {
+                return;
+            }
+            lastTriggerGo = go;
+
+            if (go.tag == "Enemy")
+            {
+                // If the shield was triggered by an enemy
+                // Decrease the level of the shield by 1
+                shieldLevel--;
+                // Destroy the enemy
+                Destroy(go);
+            }
+            else
+            {
+                print("Triggered: " + go.name);
+            }
+        }
+        else
+        {
+            // Otherwise announce the original other.gameObject
+            print("Triggered: " + other.gameObject.name);
+        }
+    }
+
+    public float shieldLevel
+    {
+        get
+        {
+            return (_shieldLevel);                                 // 1
+        }
+        set
+        {
+            _shieldLevel = Mathf.Min(value, 4);                   // 2
+            // If the shield is going to be set to less than zero
+            if (value < 0)
+            {                                        // 3
+                Destroy(this.gameObject);
+                // Tell Main.S to restart the game after a delay
+                Main.S.DelayedRestart(gameRestartDelay);
+            }
+        }
+    }
 }
