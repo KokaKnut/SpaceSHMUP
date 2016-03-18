@@ -117,6 +117,7 @@ public class Hero : MonoBehaviour {
         {
             shieldLevel++;
         }
+        /*
         else  // If it's any Weapon PowerUp
         {
             if (pu.type == weapons[0].type) // Check the current weapon type
@@ -135,6 +136,10 @@ public class Hero : MonoBehaviour {
                 ClearWeapons();
                 weapons[0].SetType(pu.type);
             }
+        } */
+        else  // If it's any Weapon PowerUp
+        {
+            SetNextWeapon(pu.type);
         }
         pu.AbsorbedBy(this.gameObject);
     }
@@ -156,6 +161,18 @@ public class Hero : MonoBehaviour {
         foreach (Weapon w in weapons)
         {
             w.SetType(WeaponType.none);
+        }
+    }
+
+    void SetNextWeapon(WeaponType wt)
+    {
+        foreach(Weapon w in weapons)
+        {
+            if (wt != w.type)
+            {
+                w.type = wt;
+                return;
+            }
         }
     }
 

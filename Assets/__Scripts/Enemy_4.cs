@@ -152,12 +152,13 @@ public class Enemy_4 : Enemy
                         break;                // and break out of the foreach loop
                     }
                 }
-                if (allDestroyed)
+                if (allDestroyed && !destroyed)
                 { // If it IS completely destroyed
                   // Tell the Main singleton that this ship has been destroyed
                     Main.S.ShipDestroyed(this);
                     // Destroy this Enemy
                     Destroy(this.gameObject);
+                    destroyed = true;
                 }
                 Destroy(other);  // Destroy the ProjectileHero
                 break;

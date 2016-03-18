@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     public float health = 10;
     public int score = 100; // Points earned for destroying this
     public int showDamageForFrames = 2; // # frames to show damage
-    public float powerUpDropChance = 1f;  // Chance to drop a power-up
+    public float powerUpDropChance = .2f;  // Chance to drop a power-up
 
     public bool ________________;
 
@@ -18,6 +18,7 @@ public class Enemy : MonoBehaviour
 
     public Bounds bounds; // The Bounds of this and its children
     public Vector3 boundsCenterOffset; // Dist of bounds.center from position
+    public bool destroyed = false; // if the ship is dead already, dont do it again
 
     void Awake()
     {
@@ -109,12 +110,13 @@ public class Enemy : MonoBehaviour
                 ShowDamage();
                 // Get the damage amount from the Projectile.type & Main.W_DEFS
                 health -= Main.W_DEFS[p.type].damageOnHit;
-                if (health <= 0)
+                if (health <= 0 && !destroyed)
                 {
                     // Tell the Main singleton that this ship has been destroyed
                     Main.S.ShipDestroyed(this);
                     // Destroy this Enemy
                     Destroy(this.gameObject);
+                    destroyed = true;
                 }
                 Destroy(other);
                 break;
