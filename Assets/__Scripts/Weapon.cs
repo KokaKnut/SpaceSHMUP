@@ -116,6 +116,10 @@ public class Weapon : MonoBehaviour
                 p.GetComponent<Rigidbody>().velocity = Vector3.up * def.velocity;
                 break;
 
+            case WeaponType.missile:
+                p = MakeProjectile();
+                p.GetComponent<Rigidbody>().velocity = Vector3.up * def.velocity;
+                break;
         }
     }
 

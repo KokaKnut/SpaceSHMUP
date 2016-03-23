@@ -61,6 +61,24 @@ public class Main : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        Utils.SetCameraBounds(this.GetComponent<Camera>());
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            int ndx = Random.Range(0, powerUpFrequency.Length);
+            WeaponType puType = powerUpFrequency[ndx];
+            // Spawn a PowerUp
+            GameObject go = Instantiate(prefabPowerUp) as GameObject;
+            PowerUp pu = go.GetComponent<PowerUp>();
+            // Set it to the proper WeaponType
+            pu.SetType(puType);
+
+            // Set it to the position of the destroyed ship
+            pu.transform.position = Hero.S.transform.position + new Vector3(0,10,0);
+        }
+    }
+
     public void SpawnEnemy()
     {
         // Pick a random Enemy prefab to instantiate

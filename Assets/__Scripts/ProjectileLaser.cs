@@ -1,23 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Projectile : MonoBehaviour {
-
-    [SerializeField]
-    protected WeaponType _type;
-
-    // This public property masks the field _type & takes action when it is set
-    public WeaponType type
-    {
-        get
-        {
-            return (_type);
-        }
-        set
-        {
-            SetType(value);
-        }
-    }
+public class ProjectileLaser : Projectile {
 
     void Awake()
     {
@@ -25,12 +9,13 @@ public class Projectile : MonoBehaviour {
         InvokeRepeating("CheckOffscreen", 2f, 2f);
     }
 
-    public virtual void SetType(WeaponType eType)
+    public override void SetType(WeaponType eType)
     {
         // Set the _type
         _type = eType;
-        WeaponDefinition def = Main.GetWeaponDefinition(_type);
+        WeaponDefinition def = Main.GetWeaponDefinition(type);
         GetComponent<Renderer>().material.color = def.projectileColor;
+        GetComponent<TrailRenderer>().material.color = def.projectileColor;
     }
 
     void CheckOffscreen()
