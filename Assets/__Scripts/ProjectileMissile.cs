@@ -10,6 +10,7 @@ public class ProjectileMissile : Projectile {
 
     [SerializeField]
     private Enemy enemyTarget;
+    private float angle = 0f;
 
     void Awake()
     {
@@ -38,8 +39,11 @@ public class ProjectileMissile : Projectile {
     {
         if (enemyTarget != null)
         {
-            transform.rotation.SetFromToRotation(Vector3.zero, transform.position - enemyTarget.transform.position);
-            GetComponent<Rigidbody>().AddForce((enemyTarget.transform.position - transform.position).normalized * speed);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0,0,Mathf.Rad2Deg * Mathf.Atan2((enemyTarget.transform.position - transform.position).y, - (enemyTarget.transform.position - transform.position).x)), .1f);
+            angle = Mathf.Rad2Deg * Mathf.Atan2((enemyTarget.transform.position - transform.position).y, (enemyTarget.transform.position - transform.position).x) - 90;
+            transform.eulerAngles = new Vector3(0, 0, angle);
+            //transform.rotation.SetFromToRotation(Vector3.zero, transform.position - enemyTarget.transform.position);
+            GetComponent<Rigidbody>().AddForce(new Vector3(- Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), 0) * speed);
         }
         else
         {
@@ -55,7 +59,7 @@ public class ProjectileMissile : Projectile {
         {
             Enemy thisEnemy = enemies[i].GetComponent<Enemy>();
             thisEnemy.bounds.center = thisEnemy.transform.position + thisEnemy.boundsCenterOffset;
-            Vector3 modifiedVector = transform.position - thisEnemy.bounds.center;
+            Vector3 modifiedVector = thisEnemy.bounds.center - transform.position;
 
             modifiedVector.y *= targetingFactor;
             if (modifiedVector.magnitude < closest.magnitude)
