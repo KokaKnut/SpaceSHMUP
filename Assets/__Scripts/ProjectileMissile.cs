@@ -16,7 +16,7 @@ public class ProjectileMissile : Projectile {
     {
         // Test to see whether this has passed off screen every 2 seconds
         InvokeRepeating("CheckOffscreen", 2f, 2f);
-        speed = Main.GetWeaponDefinition(type).velocity;
+        //speed = Main.GetWeaponDefinition(type).velocity;
         gameObject.GetComponentInChildren<SpriteRenderer>().transform.Rotate(new Vector3(0,0,Random.value * 360));
     }
 
@@ -27,6 +27,11 @@ public class ProjectileMissile : Projectile {
             SpriteRenderer sprite = gameObject.GetComponentInChildren<SpriteRenderer>();
             sprite.enabled = true;
             sprite.transform.position = enemyTarget.transform.position + targetOffset;
+
+            Vector3 enemyVel = enemyTarget.GetComponent<Rigidbody>().velocity;
+            Vector3 adjTarget = (enemyVel * GetComponent<Rigidbody>().velocity.magnitude * 3) + (enemyTarget.transform.position - transform.position);
+            sprite.transform.position = adjTarget;
+
             sprite.transform.Rotate(targetRotationSpeed);
         }
         else
@@ -43,7 +48,8 @@ public class ProjectileMissile : Projectile {
             Vector3 adjTarget = (enemyVel * GetComponent<Rigidbody>().velocity.magnitude * 3) + (enemyTarget.transform.position - transform.position);
             angle = Mathf.Rad2Deg * Mathf.Atan2(adjTarget.y, adjTarget.x) - 90;
             transform.eulerAngles = new Vector3(0, 0, angle);
-            GetComponent<Rigidbody>().AddForce(new Vector3(- Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), 0) * speed);
+            if((GetComponent<Rigidbody>().velocity + (new Vector3(-Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), 0) * speed)).magnitude < (GetComponent<Rigidbody>().velocity).magnitude)
+                GetComponent<Rigidbody>().AddForce(new Vector3(- Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad), 0) * speed);
         }
         else
         {

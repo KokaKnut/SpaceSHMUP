@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ProjectileLaser : Projectile {
+public class ProjectilePhaser : Projectile {
 
     public float wiggleWidth = 0f;
     public float wiggleFreq = 0f;
@@ -17,7 +17,7 @@ public class ProjectileLaser : Projectile {
 
     void FixedUpdate()
     {
-        transform.position += new Vector3(Mathf.Sin(Time.fixedTime * (wiggleFreq + offset)) * wiggleWidth,0f,0f);
+        transform.position += new Vector3(Mathf.Sin(Time.fixedTime * (wiggleFreq + offset)) / wiggleWidth,0f,0f);
     }
 
     public override void SetType(WeaponType eType)

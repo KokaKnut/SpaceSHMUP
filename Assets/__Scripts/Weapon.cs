@@ -111,7 +111,7 @@ public class Weapon : MonoBehaviour
                 p.GetComponent<Rigidbody>().velocity = new Vector3(.2f, 0.9f, 0) * def.velocity;
                 break;
 
-            case WeaponType.laser:
+            case WeaponType.phaser:
                 p = MakeProjectile();
                 p.GetComponent<Rigidbody>().velocity = Vector3.up * def.velocity;
                 break;
